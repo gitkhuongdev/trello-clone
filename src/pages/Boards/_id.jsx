@@ -1,7 +1,7 @@
-import Container from '@mui/material/Container';
-import AppBar from '../../components/AppBar';
-import BoardBar from './BoardBar';
-import BoardContent from './BoardContent';
+import Container from '@mui/material/Container'
+import AppBar from '../../components/AppBar'
+import BoardBar from './BoardBar'
+import BoardContent from './BoardContent'
 
 function Board() {
   return (
@@ -10,7 +10,7 @@ function Board() {
       <BoardBar />
       <BoardContent />
     </Container>
-  );
+  )
 }
 
-export default Board;
+export default Board
