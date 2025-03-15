@@ -22,6 +22,7 @@ function Started() {
   return (
     <Box>
       <Button
+        sx={{ color: 'white' }}
         id='basic-button'
         aria-controls={open ? 'basic-menu-started' : undefined}
         aria-haspopup='true'
