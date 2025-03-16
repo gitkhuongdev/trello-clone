@@ -10,7 +10,6 @@ import Box from '@mui/material/Box';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
-import { colors } from '@mui/material';
 
 function ModeSelect() {
   const { mode, setMode } = useColorScheme();
