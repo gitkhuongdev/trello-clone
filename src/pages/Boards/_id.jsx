@@ -4,12 +4,13 @@ import BoardBar from './BoardBar/BoardBar';
 import BoardContent from './BoardContent/BoardContent';
 import { useEffect, useState } from 'react';
 import { fetchBoardDetailsAPI } from '~/apis';
+import { mockData } from '~/apis/mock-data';
 
 function Board() {
   const [board, setBoard] = useState(null);
 
   useEffect(() => {
-    const boardId = '67f28de9d34984f4b659bd63';
+    const boardId = '67f2ac4d48a2d9c07445f498';
 
     // Call API
     fetchBoardDetailsAPI(boardId).then((board) => {
@@ -20,8 +21,8 @@ function Board() {
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
-      <BoardBar board={board} />
-      <BoardContent board={board} />
+      <BoardBar board={mockData.board} />
+      <BoardContent board={mockData.board} />
     </Container>
   );
 }
