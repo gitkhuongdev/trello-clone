@@ -3,8 +3,8 @@ import ListColumns from './ListColumns/ListColumns';
 import { mapOrder } from '~/utils/sorts';
 import {
   DndContext,
-  MouseSensor,
-  TouchSensor,
+  // MouseSensor,
+  // TouchSensor,
   useSensor,
   useSensors,
   DragOverlay,
@@ -15,6 +15,9 @@ import {
   // rectIntersection,
   // closestCenter,
 } from '@dnd-kit/core';
+
+import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensors';
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 
