@@ -22,6 +22,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close';
+import { toast } from 'react-toastify';
 
 function Column({ column }) {
   const {
@@ -59,7 +60,9 @@ function Column({ column }) {
 
   const addNewCard = () => {
     if (!newCardTitle) {
-      // console.log('Enter Card title');
+      toast.error('Please enter Card title!', {
+        position: 'bottom-right',
+      });
       return;
     }
     // console.log(newCardTitle);
