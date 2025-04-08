@@ -12,21 +12,24 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { toast } from 'react-toastify';
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
   const toggleOpenNewColumnForm = () =>
     setOpenNewColumnForm(!openNewColumnForm);
 
   const [newColumnTitle, setNewColumnTitle] = useState('');
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter Column title!');
       return;
     }
-    // console.log(newColumnTitle);
-    // Goi API
 
+    const newColumnData = {
+      title: newColumnTitle,
+    };
+    // Goi API
+    await createNewColumn(newColumnData);
     // Dong trang thai them column moi
     toggleOpenNewColumnForm();
     setNewColumnTitle('');
@@ -49,7 +52,11 @@ function ListColumns({ columns }) {
         }}
       >
         {columns?.map((column) => (
-          <Column key={column._id} column={column} />
+          <Column
+            key={column._id}
+            column={column}
+            createNewCard={createNewCard}
+          />
         ))}
 
         {!openNewColumnForm ? (
