@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import ListColumns from './ListColumns/ListColumns';
-import { mapOrder } from '~/utils/sorts';
 import {
   DndContext,
   // MouseSensor,
@@ -32,7 +31,13 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD',
 };
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({
+  board,
+  createNewColumn,
+  createNewCard,
+  moveColumns,
+  moveCardInTheSameColum,
+}) {
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
   // });
@@ -58,12 +63,8 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
   const lastOverId = useRef(null);
 
   useEffect(() => {
-    const orderedColumns = mapOrder(
-      board?.columns,
-      board?.columnOrderIds,
-      '_id'
-    );
-    setOrderedColumns(orderedColumns);
+    // vd 71
+    setOrderedColumns(board.columns);
   }, [board]);
 
   // Tim 1 column theo CardId
@@ -247,7 +248,6 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         );
       } else {
         //Hanh dong keo tha trong 1 column
-
         // Lấy vị trí cũ từ oldColumnWhenDraggingCard
         const oldCardIndex = oldColumnWhenDraggingCard?.cards?.findIndex(
           (c) => c._id === activeDragItemId
@@ -265,6 +265,7 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
           newCardIndex
         );
 
+        const dndOrderedCardIds = dndOrderedCards.map((card) => card._id);
         setOrderedColumns((prevColumns) => {
           // Clone mang OrderedColumnsState cu ra mot cai moi de xu ly data roi return - cap nhat lai OrderedColumnsState moi
           const nextColumns = cloneDeep(prevColumns);
@@ -276,11 +277,17 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
 
           // Cap nhap lai card va cardOderIds
           targetColumn.cards = dndOrderedCards;
-          targetColumn.cardOrderIds = dndOrderedCards.map((card) => card._id);
+          targetColumn.cardOrderIds = dndOrderedCardIds;
 
           // tra ve gia tri column chuan vi tri
           return nextColumns;
         });
+
+        moveCardInTheSameColum(
+          dndOrderedCards,
+          dndOrderedCardIds,
+          oldColumnWhenDraggingCard._id
+        );
       }
     }
 
@@ -302,11 +309,10 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
           oldColumnIndex,
           newColumnIndex
         );
-        // const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
-        // console.log(dndOrderedColumnsIds);
-        // console.log('dnd', dndOrderedColumns);
 
         setOrderedColumns(dndOrderedColumns);
+
+        moveColumns(dndOrderedColumns);
       }
     }
 
