@@ -11,6 +11,7 @@ import {
   createNewCardAPI,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI,
 } from '~/apis';
 
 import { generatePlaceholderCard } from '~/utils/formatters';
@@ -73,8 +74,15 @@ function Board() {
       (column) => column._id === createdCard.columnId
     );
     if (columnToUpdate) {
-      columnToUpdate.cards.push(createdCard);
-      columnToUpdate.cardOrderIds.push(createdCard._id);
+      // Neu column rong no se chua placeholder-card can phai xoa di
+      if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard];
+        columnToUpdate.cardOrderIds = [createdCard._id];
+      } else {
+        // da co data thi push vao cuoi mang
+        columnToUpdate.cards.push(createdCard);
+        columnToUpdate.cardOrderIds.push(createdCard._id);
+      }
     }
 
     setBoard(newBoard);
@@ -94,7 +102,7 @@ function Board() {
     });
   };
   // Di chuyen card trong cung column
-  const moveCardInTheSameColum = (
+  const moveCardInTheSameColumn = (
     dndOrderedCards,
     dndOrderedCardIds,
     columnId
@@ -113,6 +121,36 @@ function Board() {
     // Goi API update Board
     updateColumnDetailsAPI(columnId, {
       cardOrderIds: dndOrderedCardIds,
+    });
+  };
+
+  const moveCardToDifferentColumn = (
+    currentCardId,
+    prevColumnId,
+    nextColumnId,
+    dndOrderedColumns
+  ) => {
+    //  Update du lieu chuan state board
+    const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
+    const newBoard = { ...board };
+    newBoard.columns = dndOrderedColumns;
+    newBoard.columnOrderIds = dndOrderedColumnsIds;
+    setBoard(newBoard);
+
+    // Call API u ly phia BE
+    let prevCardOrderIds = dndOrderedColumns.find(
+      (c) => c._id === prevColumnId
+    )?.cardOrderIds;
+    // Xu ly loi khi keo phan tu Card cuoi cung ra khoi Column, khi column rong du lieu gui len BE se co placeholder-card can phai xoa
+    if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = [];
+
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find((c) => c._id === nextColumnId)
+        ?.cardOrderIds,
     });
   };
 
@@ -143,7 +181,8 @@ function Board() {
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
         moveColumns={moveColumns}
-        moveCardInTheSameColum={moveCardInTheSameColum}
+        moveCardInTheSameColumn={moveCardInTheSameColumn}
+        moveCardToDifferentColumn={moveCardToDifferentColumn}
       />
     </Container>
   );

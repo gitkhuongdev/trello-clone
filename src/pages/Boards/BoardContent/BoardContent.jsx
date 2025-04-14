@@ -36,7 +36,8 @@ function BoardContent({
   createNewColumn,
   createNewCard,
   moveColumns,
-  moveCardInTheSameColum,
+  moveCardInTheSameColumn,
+  moveCardToDifferentColumn,
 }) {
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
@@ -82,7 +83,8 @@ function BoardContent({
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumns((prevColumns) => {
       // Tim index cua cai overCard trong column dich (Noi ma activeCard sap duoc tha)
@@ -152,6 +154,15 @@ function BoardContent({
 
         // console.log(nextOverColumn);
       }
+      // Neu function nay duoc goi tu handleDragEnd nghia la keo tha xong, luc nay moi goi API 1 lan o day
+      if (triggerFrom === 'handleDragEnd') {
+        moveCardToDifferentColumn(
+          activeDraggingCardId,
+          oldColumnWhenDraggingCard._id,
+          nextOverColumn._id,
+          nextColumns
+        );
+      }
 
       return nextColumns;
     });
@@ -206,7 +217,8 @@ function BoardContent({
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
       );
     }
   };
@@ -244,7 +256,8 @@ function BoardContent({
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         );
       } else {
         //Hanh dong keo tha trong 1 column
@@ -283,7 +296,7 @@ function BoardContent({
           return nextColumns;
         });
 
-        moveCardInTheSameColum(
+        moveCardInTheSameColumn(
           dndOrderedCards,
           dndOrderedCardIds,
           oldColumnWhenDraggingCard._id
